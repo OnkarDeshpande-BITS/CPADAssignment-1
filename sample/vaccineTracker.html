@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Vaccine Tracker</title>
+<!-- This is the minified production version of Parse JS -->
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  
+</head>
+<body>
+
+<h1>Add Student Details</h1>
+<table>
+<tr>
+<td><input id="studentId" type="text" placeholder="Student Id"/></td>
+<td><input id="name" type="text" placeholder="Name"/></td>
+</tr>
+<tr>
+<td><input id="dob" type="text" placeholder="Date Of Birth"/></td>
+<td><input id="aadharNo" type="text" placeholder="Aadhar"/></td>
+</tr>
+<tr>
+<td><input id="vaccineDetails" type="text" placeholder="Vaccine Details"/></td>
+<td><input id="class" type="text" placeholder="Class"/></td>
+</tr>
+</table>
+
+<button id="addStudentDetails">Save</button>
+
+<h1>----------------Manage Student------------</h1>
+<input id="searchStudentId" type="text" placeholder="Student Id"/>
+<button id="searchByStdId">Search</button>
+</br>
+<input type="file" id="studentCsv">
+<button id="upload">BulkUpload</button>
+
+<h1>----------------Manage Vaccination Drive ------------</h1>
+<table>
+<tr>
+<td><input id="driveDt" type="text" placeholder="Drive Date"/></td>
+<td><input id="noDoses" type="text" placeholder="Total Doses"/></td>
+<td><input id="driveVaccineDtls" type="text" placeholder="Vaccine Details"/></td>
+</tr>
+</table>
+</body>
+<script type="text/javascript">
+// Initialize Parse
+  Parse.initialize("pNWxjrix1cu6IokwslWDmklCfdl6X8obnLnTp9bY", "eojW3E0kI37lFyuS7ODP2yPyfgezOZwamVmJGSJZ"); 
+  Parse.serverURL = "https://parseapi.back4app.com/";
+  // Create a new Student
+async function saveStudentDetails() {
+
+  // Creates a new Parse "User" object, which is created by default in your Parse app
+  let student = new Parse.Object("StudentVaccinationDetails");
+  
+  student.set("studentId", document.getElementById("studentId").value);
+  student.set("name", document.getElementById("name").value);
+  student.set("dob", parseInt(document.getElementById("dob").value));
+  student.set("aadharNo", document.getElementById("aadharNo").value);
+  student.set("class", parseInt(document.getElementById("class").value));
+  try {
+    // Call the save method, which returns the saved object if successful
+    student = await student.save();
+    if (student !== null) {
+      // Notify the success by getting the attributes from the "User" object, by using the get method (the id attribute needs to be accessed directly, though)
+      alert(
+        `New object created with success! ObjectId: ${student.id}, ${student.get("name")}`
+      );
+    }
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  }
+}
+
+async function getStudentById() {
+   var student = Parse.Object.extend("StudentVaccinationDetails");
+   var query = new Parse.Query(student);
+   //query.equalTo("studentId", document.getElementById("searchStudentId").value);
+   query.equalTo("doseDetails.doseNo", 4);
+   const object = await query.first();
+   alert(JSON.stringify(object));
+}
+
+
+
+async function saveCsv() {
+
+const fileUploadControl = document.getElementById("studentCsv");
+   if (fileUploadControl.files.length > 0) {
+   
+  const file = fileUploadControl.files[0];
+  const name = "student.txt";
+
+  const parseFile = new Parse.File(name, file);
+  parseFile.save().then(function() {
+  alert("File uploaded successfully");
+}, function(error) {
+  alert(error);
+});
+}
+}
+
+// Add on click listener to call the create parse user function
+document.getElementById("addStudentDetails").addEventListener("click", async function () {
+  saveStudentDetails();
+});
+document.getElementById("searchByStdId").addEventListener("click", async function () {
+  getStudentById();
+});
+document.getElementById("upload").addEventListener("click", async function () {
+  saveCsv();
+});
+  </script>
+</html>
