@@ -36,10 +36,12 @@
 <h1>----------------Manage Vaccination Drive ------------</h1>
 <table>
 <tr>
+<td><input id="driveName" type="text" placeholder="Drive Name"/></td>
 <td><input id="driveDt" type="text" placeholder="Drive Date"/></td>
 <td><input id="noDoses" type="text" placeholder="Total Doses"/></td>
 <td><input id="driveVaccineDtls" type="text" placeholder="Vaccine Details"/></td>
 </tr>
+<tr><td><button id="addDrive">Save</button></td></tr>
 </table>
 </body>
 <script type="text/javascript">
@@ -49,13 +51,13 @@
   // Create a new Student
 async function saveStudentDetails() {
 
-  // Creates a new Parse "User" object, which is created by default in your Parse app
   let student = new Parse.Object("StudentVaccinationDetails");
   
   student.set("studentId", document.getElementById("studentId").value);
   student.set("name", document.getElementById("name").value);
   student.set("dob", parseInt(document.getElementById("dob").value));
   student.set("aadharNo", document.getElementById("aadharNo").value);
+  student.set("doseDetails", eval(document.getElementById("vaccineDetails").value));
   student.set("class", parseInt(document.getElementById("class").value));
   try {
     // Call the save method, which returns the saved object if successful
@@ -88,15 +90,41 @@ const fileUploadControl = document.getElementById("studentCsv");
    if (fileUploadControl.files.length > 0) {
    
   const file = fileUploadControl.files[0];
-  const name = "student.txt";
-
+  const today = new Date();
+  var name = file.name+"_"+today.getDate()+""+(today.getMonth()+1)+""+today.getFullYear();
+alert("aaya");
   const parseFile = new Parse.File(name, file);
+  parseFile.addMetadata('addedBy','Admin');
+  parseFile.addMetadata('type', 'StudentVaccinationDetails');
   parseFile.save().then(function() {
   alert("File uploaded successfully");
 }, function(error) {
-  alert(error);
+  alert("Returned Error - "+error);
 });
 }
+}
+
+async function createNewDrive() {
+
+  var drive = new Parse.Object("VaccinationDrive");
+  
+  drive.set("driveName", document.getElementById("driveName").value);
+  drive.set("driveDt", parseInt(document.getElementById("driveDt").value));
+  drive.set("totalDoses", parseInt(document.getElementById("noDoses").value));
+  drive.set("vaccineDetails", eval(document.getElementById("driveVaccineDtls").value));
+  
+  try {
+    // Call the save method, which returns the saved object if successful
+    drive = await drive.save();
+    if (drive !== null) {
+      // Notify the success by getting the attributes from the "User" object, by using the get method (the id attribute needs to be accessed directly, though)
+      alert(
+        `New drive created. Details: ${drive.driveName}, ${drive.get("driveDt")}`
+      );
+    }
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  }
 }
 
 // Add on click listener to call the create parse user function
@@ -108,6 +136,9 @@ document.getElementById("searchByStdId").addEventListener("click", async functio
 });
 document.getElementById("upload").addEventListener("click", async function () {
   saveCsv();
+});
+document.getElementById("addDrive").addEventListener("click", async function () {
+  createNewDrive();
 });
   </script>
 </html>

@@ -1,0 +1,7 @@
+{
+  "driveDt": 1,
+  "state": "A string",
+  "totalDoses": 1,
+  "vaccineDetails": { "foo": "bar" },
+  "driveName": "A string"
+}

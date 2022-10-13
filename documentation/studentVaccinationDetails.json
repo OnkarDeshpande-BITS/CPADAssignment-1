@@ -1,0 +1,16 @@
+{
+  "studentId": "Id/RollNo of student , which can be used to query student profile",
+  "name": "Name",
+  "aadharNo": "Optional aadharNo",
+  "isVaccinated": true/false,
+  "noOfDoses": 1 (autopopulated),
+  "primaryVaccineName": "derived",
+  "class": 1,
+  "age": 1,
+  "schoolDriveId": "link of vaccination drive conducted by school , autopopulated",
+  "dob": 1,
+  "doseDetails": [{"doseNo": 1,"date": 1122020,"name": "Covaccine","batchNo": "111222"}]
+  "lastVaccineDt": 1,
+  "aadhar": "A string",
+  "vaccineDetails": "A string"
+}
