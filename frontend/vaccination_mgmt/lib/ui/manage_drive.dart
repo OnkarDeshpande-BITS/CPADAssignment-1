@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vaccination_mgmt/model/vaccineDrive.dart';
 import 'package:vaccination_mgmt/ui/templates/action_row.dart';
 import 'package:vaccination_mgmt/ui/new_drive.dart';
+import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
+import 'package:intl/intl.dart';
+import 'package:vaccination_mgmt/ui/drive_list_view.dart';
+import 'package:vaccination_mgmt/ui/drive_edit.dart';
 
 class DriveMainWidget extends StatefulWidget {
   const DriveMainWidget({Key? key}) : super(key: key);
@@ -11,6 +16,7 @@ class DriveMainWidget extends StatefulWidget {
 
 class _DriveMainWidgetState extends State<DriveMainWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final DateFormat dtFormatter = DateFormat('dd-MM-yyyy');
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +67,13 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Manage Drive',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              fontFamily: 'Lexend Deca',
-                            )
-                          ),
+                          Text('Manage Drive',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontFamily: 'Lexend Deca',
+                              )),
                         ],
                       ),
                     ),
@@ -83,28 +87,202 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
             child: CustomActionRow('Conduct New', () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const SimpleFormWidget()),
-              );
+                MaterialPageRoute(
+                    builder: (context) => const SimpleFormWidget()),
+              ).then((_) {
+                setState(() {
+                  // Call setState to refresh the page.
+                });
+              });
             }),
           ),
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-            child: CustomActionRow('View/Modify Drive', () => debugPrint("View drive clicked")),
+            child: CustomActionRow(
+                'View/Modify Drive', () => debugPrint("View drive clicked")),
           ),
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-            child: CustomActionRow('Manage/Modify Next Drive', () => debugPrint("Next drive clicked")),
-          ),
+              padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+              child: FutureBuilder<List<VaccineDrive>>(
+                  future: getNextDriveDetails(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: 60,
+                              child: CircularProgressIndicator()),
+                        );
+                      default:
+                        VaccineDrive drive;
+                        var nextDriveDt;
+
+                        if (snapshot.hasError ||
+                            !snapshot.hasData ||
+                            snapshot.data!.length == 0) {
+                          return CustomActionRow(
+                              'Manage/Modify Next Drive - No Next Drive',
+                              () => debugPrint("Next drive clicked"));
+                        } else {
+                          drive = snapshot.data![0];
+                          nextDriveDt = drive!.driveDt;
+
+                          return CustomActionRow(
+                              'Manage/Modify Next Drive on ${dtFormatter.format(nextDriveDt)}',
+                              () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditDriveWidget(
+                                                editPageTitle:
+                                                    'Edit Next Drive',
+                                                drive: drive,
+                                                forApproval: false,
+                                              )),
+                                    )
+                                  });
+                        }
+                    }
+                  })),
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-            child: CustomActionRow('Approve Drives', () => debugPrint("View drive clicked")),
-          ),
+              padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+              child: FutureBuilder<List<VaccineDrive>>(
+                  future: getDrivesToApprove(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: 60,
+                              child: CircularProgressIndicator()),
+                        );
+                      default:
+                        if (snapshot.hasError ||
+                            !snapshot.hasData ||
+                            snapshot.data!.length == 0) {
+                          return CustomActionRow(
+                              'Approve Drives - 0 Pending Approvals', () {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("There are no Drives for Approval"),
+                              duration: Duration(seconds: 2),
+                            ));
+                          });
+                        } else {
+                          int noOfDrivesForApproval = snapshot.data!.length;
+                          return CustomActionRow(
+                              'Approve Drives - ${noOfDrivesForApproval} Require Approvals',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DriveListWidget(
+                                        title: 'Need Approval',
+                                        listGetter: () => getDrivesToApprove(),
+                                        itemEditCall: (driveToEdit) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditDriveWidget(
+                                                      editPageTitle:
+                                                          'Approve & Edit Drive',
+                                                      drive: driveToEdit,
+                                                      forApproval: true,
+                                                    )),
+                                          ).then((_) {
+                                            setState(() {
+                                              // Call setState to refresh the page.
+                                            });
+                                          });
+                                        },
+                                      )),
+                            ).then((_) {
+                              setState(() {
+                                // Call setState to refresh the page.
+                              });
+                            });
+                          });
+                        }
+                    }
+                  })),
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-            child: CustomActionRow('Upcoming Drives',() => debugPrint("View drive clicked")),
-          ),
+              padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+              child: FutureBuilder<int>(
+                  future: noOfUpcomingDrives(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: 60,
+                              child: CircularProgressIndicator()),
+                        );
+                      default:
+                        if (snapshot.hasError || !snapshot.hasData) {
+                          return CustomActionRow('0 Upcoming Drives', () {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("No Upcoming Drives"),
+                              duration: Duration(seconds: 2),
+                            ));
+                          });
+                        } else {
+                          int noOfUpcoming = snapshot.data!;
+                          return CustomActionRow(
+                              '${noOfUpcoming} Upcoming Drives', () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DriveListWidget(
+                                      title: 'Upcoming Drives',
+                                      listGetter: () => getUpcomingDrives(),
+                                      itemEditCall:
+                                          (driveToEdit, pageRefreshFunction) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditDriveWidget(
+                                                    editPageTitle: 'Edit Drive',
+                                                    drive: driveToEdit,
+                                                    forApproval: false,
+                                                  )),
+                                        ).then((_) {
+                                          pageRefreshFunction();
+                                        });
+                                      })),
+                            );
+                          });
+                        }
+                    }
+                  })),
         ],
       ),
     );
+  }
+
+  VaccineDriveBackendAccessor backendAccessor = VaccineDriveBackendAccessor();
+
+  Future<List<VaccineDrive>> getNextDriveDetails() async {
+    return await backendAccessor.getNextDrive();
+  }
+
+  Future<List<VaccineDrive>> getDrivesToApprove() async {
+    return await backendAccessor.getDrivesToApprove();
+  }
+
+  Future<int> noOfUpcomingDrives() async {
+    return await backendAccessor.countUpcomingDrives();
+  }
+
+  Future<List<VaccineDrive>> getUpcomingDrives() async {
+    return await backendAccessor.getUpcomingDrives();
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:vaccination_mgmt/model/vaccineDrive.dart';
@@ -14,10 +15,10 @@ class VaccineDriveBackendAccessor {
       drive.set('totalDoses', driveDetails.totalDoses);
     }
     final apiResponse = await drive.save();
-    if(apiResponse.success) {
+    if (apiResponse.success) {
       print("Successfully saved");
     } else {
-      print("Error - "+apiResponse.error.toString());
+      print("Error - " + apiResponse.error.toString());
     }
   }
 
@@ -25,20 +26,27 @@ class VaccineDriveBackendAccessor {
     final QueryBuilder<ParseObject> parseQuery =
         QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
     parseQuery
-      ..whereEqualTo('state', DriveState.PENDING)
-      ..whereGreaterThan('driveDt', DateTime.now());
-    return _executeQueryAndGetListResult(parseQuery);
+      ..whereEqualTo('state', DriveState.PENDING.name)
+      ..whereGreaterThan('driveDt', DateTime.now().millisecondsSinceEpoch);
+    return await _executeQueryAndGetListResult(parseQuery);
+  }
+
+  Future<List<VaccineDrive>> getDrivesToApprove() async {
+    final QueryBuilder<ParseObject> parseQuery =
+        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
+          ..whereEqualTo('state', DriveState.DRAFT.name)
+          ..whereGreaterThan('driveDt', DateTime.now().millisecondsSinceEpoch);
+    return await _executeQueryAndGetListResult(parseQuery);
   }
 
   Future<List<VaccineDrive>> getNextDrive() async {
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
-    parseQuery
-      ..whereEqualTo('state', DriveState.PENDING)
-      ..whereGreaterThan('driveDt', DateTime.now())
-      ..orderByAscending('driveDt')
-      ..setLimit(1);
-    return _executeQueryAndGetListResult(parseQuery);
+        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
+          ..whereEqualTo('state', DriveState.PENDING.name)
+          ..whereGreaterThan('driveDt', DateTime.now().millisecondsSinceEpoch)
+          ..orderByAscending('driveDt')
+          ..setLimit(1);
+    return await _executeQueryAndGetListResult(parseQuery);
   }
 
   Future<int> countUpcomingDrives() async {
@@ -46,8 +54,8 @@ class VaccineDriveBackendAccessor {
     final QueryBuilder<ParseObject> parseQuery =
         QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
     parseQuery
-      ..whereEqualTo('state', DriveState.PENDING)
-      ..whereGreaterThan('driveDt', DateTime.now())
+      ..whereEqualTo('state', DriveState.PENDING.name)
+      ..whereGreaterThan('driveDt', DateTime.now().millisecondsSinceEpoch)
       ..count();
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.result != null) {
@@ -61,7 +69,7 @@ class VaccineDriveBackendAccessor {
     final QueryBuilder<ParseObject> parseQuery =
         QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
     parseQuery
-      ..whereEqualTo('state', DriveState.COMPLETED)
+      ..whereEqualTo('state', DriveState.COMPLETED.name)
       ..count();
     final apiResponse = await parseQuery.query();
     if (apiResponse.success && apiResponse.result != null) {
@@ -87,12 +95,31 @@ class VaccineDriveBackendAccessor {
     String? driveName = parseObject.get<String>('driveName');
     int? dateInMillis = parseObject.get<int>('driveDt');
 
-    List<VaccineDetail>? details = parseObject.get<List<VaccineDetail>>('vaccineDetails');
+    List<dynamic>? details = parseObject.get<List<dynamic>>('vaccineDetails');
     VaccineDrive drive = VaccineDrive(
         driveName!, DateTime.fromMillisecondsSinceEpoch(dateInMillis!));
+    drive.uuid = parseObject.objectId;
+    drive.setStateFromString(parseObject.get('state'));
     if (details != null && details.isNotEmpty) {
-      drive.vaccineDetails = details;
+      details.forEach((element) => drive.addVaccineDetails(
+          vaccineName: element['name'], doses: element['doses']));
     }
     return drive;
+  }
+
+  Future<void> updateVaccineDrive(VaccineDrive driveDetails) async {
+    final drive = ParseObject('VaccinationDrive')
+      ..objectId = driveDetails.uuid
+      ..set('state', driveDetails.state.name);
+    if (driveDetails.vaccineDetails.isNotEmpty) {
+      drive.set('vaccineDetails', driveDetails.vaccineDetails);
+      drive.set('totalDoses', driveDetails.totalDoses);
+    }
+    final apiResponse = await drive.save();
+    if (apiResponse.success) {
+      print("Successfully saved");
+    } else {
+      print("Error - " + apiResponse.error.toString());
+    }
   }
 }

@@ -2,39 +2,60 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/model/vaccineDrive.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
+import 'package:intl/intl.dart';
 
-class SimpleFormWidget extends StatefulWidget {
-  const SimpleFormWidget({Key? key}) : super(key: key);
+class EditDriveWidget extends StatefulWidget {
+  final String editPageTitle;
+  final VaccineDrive drive;
+  final bool? forApproval;
+
+  const EditDriveWidget(
+      {super.key,
+      required this.editPageTitle,
+      required this.drive,
+      this.forApproval});
 
   @override
-  SimpleFormWidgetState createState() => SimpleFormWidgetState();
+  EditDriveState createState() =>
+      EditDriveState(editPageTitle, drive, forApproval);
 }
 
-class SimpleFormWidgetState extends State<SimpleFormWidget> {
+class EditDriveState extends State<EditDriveWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormBuilderState>();
+  final DateFormat dtFormatter = DateFormat('dd-MM-yyyy');
+  final String editPageTitle;
+  final VaccineDrive drive;
+  final bool? forApproval;
 
-  void saveDriveDetails() async {
+  EditDriveState(this.editPageTitle, this.drive, this.forApproval);
+
+  void updateDriveDetails() async {
     var driveForm = _formKey.currentState?.value;
     debugPrint(_formKey.currentState?.value['driveName']);
     debugPrint(_formKey.currentState?.value['driveDate'].toString());
 
-    VaccineDrive drive =
-        VaccineDrive(driveForm?['driveName'], driveForm?['driveDate']);
-    drive.isPreApproved = driveForm?['isPreApproved'];
+    VaccineDrive driveClone = VaccineDrive(drive.driveName, drive.driveDt);
+    driveClone.uuid = drive.uuid;
+    driveClone.state = drive.state;
+
+    if (forApproval == true && driveForm?['approved']) {
+      driveClone.state = DriveState.PENDING;
+    }
+
     if (driveForm?['covaxineDoses'] != null) {
-      drive.addVaccineDetails(
+      driveClone.addVaccineDetails(
           vaccineName: 'Covaxine',
           doses: int.parse(driveForm?['covaxineDoses']));
     }
     if (driveForm?['covishieldDoses'] != null) {
-      drive.addVaccineDetails(
+      driveClone.addVaccineDetails(
           vaccineName: 'Covishield',
           doses: int.parse(driveForm?['covishieldDoses']));
     }
-    VaccineDriveBackendAccessor().createVaccineDrive(drive);
+    VaccineDriveBackendAccessor().updateVaccineDrive(driveClone);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Drive Successfully Created"),
+      content: Text("Drive Successfully Saved"),
       duration: Duration(seconds: 2),
     ));
     Navigator.pop(context);
@@ -42,6 +63,9 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, String> vaccineMap = {
+      for (var e in drive.vaccineDetails) e.vaccineName: e.noOfDoses.toString()
+    };
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -81,7 +105,7 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
                   child: Text(
-                    'Conduct New Drive',
+                    editPageTitle,
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       color: Colors.black54,
@@ -124,53 +148,10 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
                                 EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                             child: FormBuilderTextField(
                               name: 'driveName',
-                              decoration: InputDecoration(
+                              initialValue: drive.driveName,
+                              enabled: false,
+                              decoration: const InputDecoration(
                                 labelText: 'Drive Name',
-                              ),
-
-                              // valueTransformer: (text) => num.tryParse(text),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter value for DriveName";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderDateTimePicker(
-                              name: 'driveDate',
-                              initialEntryMode: DatePickerEntryMode.calendar,
-                              initialValue: DateTime.now(),
-                              inputType: InputType.date,
-                              decoration: InputDecoration(
-                                labelText: 'Drive Date',
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _formKey.currentState!.fields['date']
-                                        ?.didChange(null);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderCheckbox(
-                              name: 'isPreApproved',
-                              initialValue: false,
-                              title: Text(
-                                'Drive Is PreApproved',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
                               ),
                             ),
                           ),
@@ -178,7 +159,39 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                             child: FormBuilderTextField(
+                              name: 'driveDate',
+                              initialValue: dtFormatter.format(drive.driveDt),
+                              enabled: false,
+                              decoration: const InputDecoration(
+                                labelText: 'Drive Date',
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                              visible: forApproval == true,
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16, 16, 16, 0),
+                                child: FormBuilderCheckbox(
+                                  name: 'approved',
+                                  initialValue: false,
+                                  title: Text(
+                                    'Approve',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: FormBuilderTextField(
                               name: 'covaxineDoses',
+                              initialValue: vaccineMap.containsKey('Covaxine')
+                                  ? vaccineMap['Covaxine']
+                                  : '0',
                               decoration: InputDecoration(
                                 labelText: 'Covaxine Doses',
                               ),
@@ -194,6 +207,9 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
                                 EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                             child: FormBuilderTextField(
                               name: 'covishieldDoses',
+                              initialValue: vaccineMap.containsKey('Covishield')
+                                  ? vaccineMap['Covishield']
+                                  : '0',
                               decoration: InputDecoration(
                                 labelText: 'Covishield Doses',
                               ),
@@ -216,31 +232,14 @@ class SimpleFormWidgetState extends State<SimpleFormWidget> {
                                 _formKey.currentState!.save();
                                 debugPrint(
                                     _formKey.currentState?.value.toString());
-                                saveDriveDetails();
+                                updateDriveDetails();
                               } else {
                                 debugPrint('validation failed');
                               }
                             },
                             child: const Text(
-                              'Submit',
+                              'Save',
                               style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _formKey.currentState?.reset();
-                            },
-                            // color: Theme.of(context).colorScheme.secondary,
-                            child: Text(
-                              'Reset',
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
                             ),
                           ),
                         ),
