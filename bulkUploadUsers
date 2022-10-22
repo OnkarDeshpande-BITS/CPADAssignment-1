@@ -1,0 +1,131 @@
+import '../backend/firebase_storage/storage.dart';
+import '../flutter_flow/flutter_flow_icon_button.dart';
+import '../flutter_flow/flutter_flow_pdf_viewer.dart';
+import '../flutter_flow/flutter_flow_theme.dart';
+import '../flutter_flow/flutter_flow_util.dart';
+import '../flutter_flow/flutter_flow_widgets.dart';
+import '../flutter_flow/upload_media.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class BulkUploadUsersWidget extends StatefulWidget {
+  const BulkUploadUsersWidget({Key? key}) : super(key: key);
+
+  @override
+  _BulkUploadUsersWidgetState createState() => _BulkUploadUsersWidgetState();
+}
+
+class _BulkUploadUsersWidgetState extends State<BulkUploadUsersWidget> {
+  bool isMediaUploading = false;
+  String uploadedFileUrl = '';
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      appBar: AppBar(
+        backgroundColor: Color(0xFFE4E4E8),
+        automaticallyImplyLeading: false,
+        leading: FlutterFlowIconButton(
+          borderColor: Colors.transparent,
+          borderRadius: 30,
+          borderWidth: 1,
+          buttonSize: 60,
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: Color(0xFF0A0202),
+            size: 30,
+          ),
+          onPressed: () {
+            print('IconButton pressed ...');
+          },
+        ),
+        title: Text(
+          'Bulk Upload Users',
+          style: FlutterFlowTheme.of(context).title2.override(
+                fontFamily: 'Poppins',
+                color: Color(0xFF010306),
+              ),
+        ),
+        actions: [],
+        centerTitle: true,
+        elevation: 2,
+      ),
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 25, 20, 0),
+                child: FFButtonWidget(
+                  onPressed: () async {
+                    final selectedFile =
+                        await selectFile(allowedExtensions: ['pdf']);
+                    if (selectedFile != null) {
+                      setState(() => isMediaUploading = true);
+                      String? downloadUrl;
+                      try {
+                        showUploadMessage(
+                          context,
+                          'Uploading file...',
+                          showLoading: true,
+                        );
+                        downloadUrl = await uploadData(
+                            selectedFile.storagePath, selectedFile.bytes);
+                      } finally {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        isMediaUploading = false;
+                      }
+                      if (downloadUrl != null) {
+                        setState(() => uploadedFileUrl = downloadUrl!);
+                        showUploadMessage(
+                          context,
+                          'Success!',
+                        );
+                      } else {
+                        setState(() {});
+                        showUploadMessage(
+                          context,
+                          'Failed to upload file',
+                        );
+                        return;
+                      }
+                    }
+                  },
+                  text: 'Upload Data',
+                  options: FFButtonOptions(
+                    width: double.infinity,
+                    height: 40,
+                    color: FlutterFlowTheme.of(context).primaryColor,
+                    textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                        ),
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
+                child: FlutterFlowPdfViewer(
+                  networkPath: 'http://www.pdf995.com/samples/pdf.pdf',
+                  height: 300,
+                  horizontalScroll: false,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
