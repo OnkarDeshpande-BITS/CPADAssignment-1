@@ -7,14 +7,14 @@ import 'package:intl/intl.dart';
 import 'package:vaccination_mgmt/ui/drive_list_view.dart';
 import 'package:vaccination_mgmt/ui/drive_edit.dart';
 
-class DriveMainWidget extends StatefulWidget {
-  const DriveMainWidget({Key? key}) : super(key: key);
+class ManageDriveWidget extends StatefulWidget {
+  const ManageDriveWidget({Key? key}) : super(key: key);
 
   @override
-  _DriveMainWidgetState createState() => _DriveMainWidgetState();
+  _ManageDriveStateState createState() => _ManageDriveStateState();
 }
 
-class _DriveMainWidgetState extends State<DriveMainWidget> {
+class _ManageDriveStateState extends State<ManageDriveWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final DateFormat dtFormatter = DateFormat('dd-MM-yyyy');
 
@@ -88,7 +88,7 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const SimpleFormWidget()),
+                    builder: (context) => const CreateNewDriveWidget()),
               ).then((_) {
                 setState(() {
                   // Call setState to refresh the page.
@@ -121,7 +121,7 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
 
                         if (snapshot.hasError ||
                             !snapshot.hasData ||
-                            snapshot.data!.length == 0) {
+                            snapshot.data!.isEmpty) {
                           return CustomActionRow(
                               'Manage/Modify Next Drive - No Next Drive',
                               () => debugPrint("Next drive clicked"));
@@ -183,7 +183,7 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
                                   builder: (context) => DriveListWidget(
                                         title: 'Need Approval',
                                         listGetter: () => getDrivesToApprove(),
-                                        itemEditCall: (driveToEdit) {
+                                        itemEditCall: (driveToEdit, pageRefreshFunction) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -195,9 +195,7 @@ class _DriveMainWidgetState extends State<DriveMainWidget> {
                                                       forApproval: true,
                                                     )),
                                           ).then((_) {
-                                            setState(() {
-                                              // Call setState to refresh the page.
-                                            });
+                                            pageRefreshFunction();
                                           });
                                         },
                                       )),

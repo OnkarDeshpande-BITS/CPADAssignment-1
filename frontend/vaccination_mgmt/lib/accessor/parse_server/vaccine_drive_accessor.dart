@@ -49,11 +49,19 @@ class VaccineDriveBackendAccessor {
     return await _executeQueryAndGetListResult(parseQuery);
   }
 
+  Future<List<VaccineDrive>> getLastCompleted() async {
+    final QueryBuilder<ParseObject> parseQuery =
+    QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
+      ..whereEqualTo('state', DriveState.COMPLETED.name)
+      ..orderByDescending('driveDt')
+      ..setLimit(1);
+    return await _executeQueryAndGetListResult(parseQuery);
+  }
+
   Future<int> countUpcomingDrives() async {
     int count = 0;
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
-    parseQuery
+        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
       ..whereEqualTo('state', DriveState.PENDING.name)
       ..whereGreaterThan('driveDt', DateTime.now().millisecondsSinceEpoch)
       ..count();
@@ -67,8 +75,7 @@ class VaccineDriveBackendAccessor {
   Future<int> countCompletedDrives() async {
     int count = 0;
     final QueryBuilder<ParseObject> parseQuery =
-        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'));
-    parseQuery
+        QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
       ..whereEqualTo('state', DriveState.COMPLETED.name)
       ..count();
     final apiResponse = await parseQuery.query();

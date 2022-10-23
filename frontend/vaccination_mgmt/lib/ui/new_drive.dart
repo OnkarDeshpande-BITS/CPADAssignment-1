@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/model/vaccineDrive.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
 
-class SimpleFormWidget extends StatefulWidget {
-  const SimpleFormWidget({Key? key}) : super(key: key);
+class CreateNewDriveWidget extends StatefulWidget {
+  const CreateNewDriveWidget({Key? key}) : super(key: key);
 
   @override
-  SimpleFormWidgetState createState() => SimpleFormWidgetState();
+  CreateNewDriveState createState() => CreateNewDriveState();
 }
 
-class SimpleFormWidgetState extends State<SimpleFormWidget> {
+class CreateNewDriveState extends State<CreateNewDriveWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormBuilderState>();
 
