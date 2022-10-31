@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/ui/dashboard.dart';
 import 'package:vaccination_mgmt/ui/manage_drive.dart';
+import 'package:vaccination_mgmt/ui/manage_student.dart';
 
 class VaccinationTrackerApp extends StatefulWidget {
   const VaccinationTrackerApp({Key? key}) : super(key: key);
@@ -20,10 +21,11 @@ class _VaccinationTrackerState extends State<VaccinationTrackerApp> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final menuItemList = const <MenuItem>[
     MenuItem(Icons.home, 'Home'),
+    MenuItem(Icons.accessibility, 'Students'),
     MenuItem(Icons.vaccines, 'Drive'),
   ];
   int _selectedIndex = 0;
-  final _buildBody = const <Widget>[DashboardWidget(), ManageDriveWidget()];
+  final _buildBody = const <Widget>[DashboardWidget(), ManageStudentWidget(), ManageDriveWidget()];
 
   @override
   Widget build(BuildContext context) {
