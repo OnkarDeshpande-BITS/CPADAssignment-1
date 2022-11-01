@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/model/vaccineDrive.dart';
+import 'package:vaccination_mgmt/ui/student_search.dart';
 import 'package:vaccination_mgmt/ui/templates/action_row.dart';
 import 'package:vaccination_mgmt/ui/new_drive.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
@@ -140,7 +141,11 @@ class _ManageStudentState extends State<ManageStudentWidget> {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
             child: CustomActionRow('View/Modify Student Data',
-                () => debugPrint("View drive clicked")),
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => StudentSearchWidget()),
+                )),
           ),
 
           Padding(

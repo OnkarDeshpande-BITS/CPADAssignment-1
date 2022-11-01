@@ -60,7 +60,7 @@ class StudentBackendAccessor {
     final pStudent = ParseObject('StudentVaccinationDetails')
       ..set('studentId', student.id)
       ..set('name', student.name)
-      ..set('dob', student.dob.millisecondsSinceEpoch)
+      ..set('dob', student.dob?.millisecondsSinceEpoch)
       ..set('isVaccinated', student.isVaccinated)
       ..set('aadharNo', student.aadhar);
 
@@ -70,5 +70,26 @@ class StudentBackendAccessor {
     } else {
       print("Error - " + apiResponse.error.toString());
     }
+  }
+
+  Future<List<StudentDetails>> getAllStudents() async {
+    final apiResponse = await ParseObject('StudentVaccinationDetails').getAll();
+
+    List<StudentDetails> students = [];
+    if (apiResponse.success && apiResponse.results != null) {
+      apiResponse.results?.forEach((element) {
+        String? studentId = element.get<String>('studentId');
+        String? name = element.get<String>('name');
+        String? aadhar = element.get<String>('aadharNo');
+        int? dob = element.get<int>('dob');
+
+        StudentDetails student = StudentDetails(studentId!, name!, aadhar,
+            DateTime.fromMillisecondsSinceEpoch(dob != null ? dob : 0));
+        student.uuid = (element as ParseObject).objectId;
+        student.isVaccinated = element.get<bool>('isVaccinated')!;
+        students.add(student);
+      });
+    }
+    return students;
   }
 }

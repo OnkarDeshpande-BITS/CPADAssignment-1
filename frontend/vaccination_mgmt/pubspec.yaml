@@ -41,6 +41,7 @@ dependencies:
   form_builder_validators: ^8.3.0
   percent_indicator: ^4.2.2
   file_picker: ^5.2.2
+  searchable_listview: ^2.1.1
 
 dev_dependencies:
   flutter_test:

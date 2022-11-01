@@ -5,6 +5,7 @@ import 'package:vaccination_mgmt/model/vaccineDrive.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/student_accessor.dart';
 import 'package:intl/intl.dart';
+import 'package:vaccination_mgmt/model/vaccine_type.dart';
 
 class AddNewStudentWidget extends StatefulWidget {
   const AddNewStudentWidget({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormBuilderState>();
   final DateFormat dtFormatter = DateFormat('dd-MM-yyyy');
+  bool isVaccinated_ = false;
 
   void saveStudentDetails() async {
     var studentForm = _formKey.currentState?.value;
@@ -40,50 +42,44 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
       key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(80),
         child: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 14),
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                        ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: Colors.black54,
+                        size: 25,
                       ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                  child: Text(
-                    'Add Student Details',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.black54,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                      },
                     ),
+
+                  ],
+                ),
+                Text(
+                  'Add Student Details',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    color: Colors.black54,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+
+
               ],
             ),
           ),
@@ -201,8 +197,80 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              onChanged: (val) {
+                                setState(() {
+                                  isVaccinated_ = _formKey.currentState?.fields['isVaccinated']?.value;
+
+                                });
+                              },
                             ),
                           ),
+                          if(isVaccinated_) ...[
+
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDropdown<String>(
+                                name: 'vaccineName',
+                                decoration: InputDecoration(
+                                  labelText: 'VaccineName',
+                                  hintText: 'Select Vaccine',
+                                ),
+
+                                items: VaccineType.values
+                                    .map((type) => DropdownMenuItem(
+                                  alignment: AlignmentDirectional.center,
+                                  value: type.name,
+                                  child: Text(type.name),
+                                ))
+                                    .toList(),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDateTimePicker(
+                                name: 'dose1Dt',
+                                initialEntryMode: DatePickerEntryMode.calendar,
+
+                                inputType: InputType.date,
+                                resetIcon: null,
+                                format: dtFormatter,
+                                decoration: InputDecoration(
+                                  labelText: 'Dose1 Date',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _formKey.currentState!.fields['dose1Dt']
+                                          ?.didChange(null);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDateTimePicker(
+                                name: 'dose2Dt',
+                                initialEntryMode: DatePickerEntryMode.calendar,
+                                resetIcon: null,
+                                inputType: InputType.date,
+                                format: dtFormatter,
+                                decoration: InputDecoration(
+                                  labelText: 'Dose2 Date',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _formKey.currentState!.fields['dose2Dt']
+                                          ?.didChange(null);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          ]
 
                         ],
                       ),
