@@ -49,7 +49,7 @@ class VaccineDrive {
     return _totalDoses;
   }
 
-  void set vaccineDetails(List<VaccineDetail> details) {
+  set vaccineDetails(List<VaccineDetail> details) {
     _vaccineDetails = details;
   }
 }

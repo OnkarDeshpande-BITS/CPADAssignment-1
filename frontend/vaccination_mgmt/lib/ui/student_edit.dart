@@ -3,83 +3,112 @@ import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/model/studentDetails.dart';
 import 'package:vaccination_mgmt/model/vaccineDrive.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/vaccine_drive_accessor.dart';
-import 'package:vaccination_mgmt/accessor/parse_server/student_accessor.dart';
 import 'package:intl/intl.dart';
 import 'package:vaccination_mgmt/model/vaccine_type.dart';
 
-class AddNewStudentWidget extends StatefulWidget {
-  const AddNewStudentWidget({Key? key}) : super(key: key);
+class EditStudentWidget extends StatefulWidget {
+  final StudentDetails edit_details;
+
+  const EditStudentWidget({
+    super.key,
+    required this.edit_details,
+  });
 
   @override
-  AddNewStudentState createState() => AddNewStudentState();
+  EditStudentState createState() => EditStudentState(edit_details);
 }
 
-class AddNewStudentState extends State<AddNewStudentWidget> {
+class EditStudentState extends State<EditStudentWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormBuilderState>();
   final DateFormat dtFormatter = DateFormat('dd-MM-yyyy');
-  bool isVaccinated_ = false;
+  final StudentDetails _edit_details;
+  String? vaccineName;
+  DateTime? dose1Dt;
+  DateTime? dose2Dt;
 
-  void saveStudentDetails() async {
+  EditStudentState(this._edit_details);
+
+  void updateDriveDetails() async {
     var studentForm = _formKey.currentState?.value;
-    debugPrint(_formKey.currentState?.value['studentId']);
-    debugPrint(_formKey.currentState?.value['stdDOB'].toString());
 
-    StudentDetails student = StudentDetails(studentForm?['studentId'], studentForm?['stdName'], studentForm?['aadharNo'], studentForm?['stdDOB']);
-    student.isVaccinated = studentForm?['isVaccinated'];
 
-    StudentBackendAccessor().createNewStudent(student);
+
+
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Student Details Saved Successfully"),
+      content: Text("Drive Successfully Saved"),
       duration: Duration(seconds: 2),
     ));
     Navigator.pop(context);
   }
 
+  void setDoseFields() {
+    List<DoseDetail> doseDetail = _edit_details.doseDetails;
+    if (doseDetail != null && doseDetail.length > 0) {
+      doseDetail.forEach((element) {
+        vaccineName = element.vaccineName;
+        if (element.doseNo == 1) {
+          dose1Dt = DateTime.fromMillisecondsSinceEpoch(element.doseDt);
+        } else if (element.doseNo == 2) {
+          dose2Dt = DateTime.fromMillisecondsSinceEpoch(element.doseDt);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    setDoseFields();
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
+        preferredSize: Size.fromHeight(100),
         child: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 14),
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_rounded,
-                        color: Colors.black54,
-                        size: 25,
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_rounded,
+                            color: Colors.black54,
+                            size: 30,
+                          ),
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                        ),
                       ),
-                      onPressed: () async {
-                        Navigator.pop(context);
-                      },
-                    ),
-
-                  ],
-                ),
-                Text(
-                  'Add Student Details',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    color: Colors.black54,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                    ],
                   ),
                 ),
-
-
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
+                  child: Text(
+                    'Modify Student Details',
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.black54,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -117,28 +146,19 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                               decoration: InputDecoration(
                                 labelText: 'StudentId / Rollno',
                               ),
-
-                              // valueTransformer: (text) => num.tryParse(text),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter value for StudentId";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
+                              initialValue: _edit_details.id,
+                              enabled: false,
                             ),
                           ),
                           Padding(
                             padding:
-                            EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                             child: FormBuilderTextField(
                               name: 'stdName',
                               decoration: InputDecoration(
                                 labelText: 'Name',
                               ),
-
-                              // valueTransformer: (text) => num.tryParse(text),
+                              initialValue: _edit_details.name,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return "Please enter value for Student Name";
@@ -151,14 +171,13 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                           ),
                           Padding(
                             padding:
-                            EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                             child: FormBuilderTextField(
                               name: 'aadharNo',
                               decoration: InputDecoration(
                                 labelText: 'Aadhar Number',
                               ),
-
-                              // valueTransformer: (text) => num.tryParse(text),
+                              initialValue: _edit_details.aadhar,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.next,
                             ),
@@ -169,7 +188,7 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                             child: FormBuilderDateTimePicker(
                               name: 'stdDOB',
                               initialEntryMode: DatePickerEntryMode.calendar,
-                              initialValue: DateTime.now(),
+                              initialValue: _edit_details.dob,
                               inputType: InputType.date,
                               format: dtFormatter,
                               decoration: InputDecoration(
@@ -184,94 +203,84 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderCheckbox(
-                              name: 'isVaccinated',
-                              initialValue: false,
-                              title: Text(
-                                'Already Vaccinated ?',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              onChanged: (val) {
-                                setState(() {
-                                  isVaccinated_ = _formKey.currentState?.fields['isVaccinated']?.value;
-
-                                });
-                              },
-                            ),
-                          ),
-                          if(isVaccinated_) ...[
-
+                          if (vaccineName != null &&
+                              vaccineName!.isNotEmpty) ...[
                             Padding(
                               padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'vaccineName',
+                                decoration: InputDecoration(
+                                  labelText: 'VaccineName',
+                                ),
+                                initialValue: vaccineName,
+                              ),
+                            ),
+                          ] else ...[
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                               child: FormBuilderDropdown<String>(
                                 name: 'vaccineName',
                                 decoration: InputDecoration(
                                   labelText: 'VaccineName',
                                   hintText: 'Select Vaccine',
                                 ),
-
                                 items: VaccineType.values
                                     .map((type) => DropdownMenuItem(
-                                  alignment: AlignmentDirectional.center,
-                                  value: type.name,
-                                  child: Text(type.name),
-                                ))
+                                          alignment:
+                                              AlignmentDirectional.center,
+                                          value: type.name,
+                                          child: Text(type.name),
+                                        ))
                                     .toList(),
                               ),
                             ),
-                            Padding(
-                              padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                              child: FormBuilderDateTimePicker(
-                                name: 'dose1Dt',
-                                initialEntryMode: DatePickerEntryMode.calendar,
-
-                                inputType: InputType.date,
-                                resetIcon: null,
-                                format: dtFormatter,
-                                decoration: InputDecoration(
-                                  labelText: 'Dose1 Date',
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _formKey.currentState!.fields['dose1Dt']
-                                          ?.didChange(null);
-                                    },
-                                  ),
+                          ],
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: FormBuilderDateTimePicker(
+                              name: 'dose1Dt',
+                              initialEntryMode: DatePickerEntryMode.calendar,
+                              inputType: InputType.date,
+                              resetIcon: null,
+                              format: dtFormatter,
+                              initialValue: dose1Dt,
+                              decoration: InputDecoration(
+                                labelText: 'Dose1 Date',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    _formKey.currentState!.fields['dose1Dt']
+                                        ?.didChange(null);
+                                  },
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                              child: FormBuilderDateTimePicker(
-                                name: 'dose2Dt',
-                                initialEntryMode: DatePickerEntryMode.calendar,
-                                resetIcon: null,
-                                inputType: InputType.date,
-                                format: dtFormatter,
-                                decoration: InputDecoration(
-                                  labelText: 'Dose2 Date',
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      _formKey.currentState!.fields['dose2Dt']
-                                          ?.didChange(null);
-                                    },
-                                  ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: FormBuilderDateTimePicker(
+                              name: 'dose2Dt',
+                              initialEntryMode: DatePickerEntryMode.calendar,
+                              resetIcon: null,
+                              inputType: InputType.date,
+                              initialValue: dose2Dt,
+                              format: dtFormatter,
+                              decoration: InputDecoration(
+                                labelText: 'Dose2 Date',
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    _formKey.currentState!.fields['dose2Dt']
+                                        ?.didChange(null);
+                                  },
                                 ),
                               ),
                             ),
-
-                          ]
-
+                          ),
                         ],
                       ),
                       //
@@ -287,7 +296,7 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                                 _formKey.currentState!.save();
                                 debugPrint(
                                     _formKey.currentState?.value.toString());
-                                saveStudentDetails();
+                                updateDriveDetails();
                               } else {
                                 debugPrint('validation failed');
                               }
@@ -295,23 +304,6 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
                             child: const Text(
                               'Save',
                               style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              _formKey.currentState?.reset();
-                            },
-                            // color: Theme.of(context).colorScheme.secondary,
-                            child: Text(
-                              'Reset',
-                              style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary),
                             ),
                           ),
                         ),

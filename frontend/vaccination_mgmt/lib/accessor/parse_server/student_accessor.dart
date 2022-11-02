@@ -87,9 +87,28 @@ class StudentBackendAccessor {
             DateTime.fromMillisecondsSinceEpoch(dob != null ? dob : 0));
         student.uuid = (element as ParseObject).objectId;
         student.isVaccinated = element.get<bool>('isVaccinated')!;
+        List<dynamic>? details = element.get<List<dynamic>>('doseDetails');
+        if (details != null && details.isNotEmpty) {
+          details.forEach((json) => student.addDoseDetail(DoseDetail.fromJson(json)));
+        }
         students.add(student);
       });
     }
     return students;
+  }
+
+  Future<void> updateStudent(StudentDetails student) async {
+    final drive = ParseObject('StudentVaccinationDetails')
+      ..objectId = student.uuid
+      ..set('name', student.name)
+      ..set('dob', student.dob?.millisecondsSinceEpoch)
+      ..set('aadharNo', student.aadhar);
+
+    final apiResponse = await drive.save();
+    if (apiResponse.success) {
+      print("Successfully saved");
+    } else {
+      print("Error - " + apiResponse.error.toString());
+    }
   }
 }

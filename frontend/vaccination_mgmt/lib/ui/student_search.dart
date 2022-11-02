@@ -4,6 +4,7 @@ import 'package:searchable_listview/resources/arrays.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/student_accessor.dart';
 import 'package:vaccination_mgmt/model/studentDetails.dart';
+import 'package:vaccination_mgmt/ui/student_edit.dart';
 
 class StudentSearchWidget extends StatefulWidget {
   const StudentSearchWidget({Key? key}) : super(key: key);
@@ -102,7 +103,13 @@ class _StudentSearchState extends State<StudentSearchWidget> {
                     onRefresh: () async {
                       debugPrint("refreshed");
                     },
-                    onItemSelected: (StudentDetails item) {},
+                    onItemSelected: (StudentDetails item) {Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditStudentWidget(edit_details: item
+
+                          )),
+                    );},
                     inputDecoration: InputDecoration(
                       labelText: "Search Student By Name or Id",
                       fillColor: Colors.white,

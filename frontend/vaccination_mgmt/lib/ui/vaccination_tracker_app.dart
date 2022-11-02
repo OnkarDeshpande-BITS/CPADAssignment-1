@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/ui/dashboard.dart';
 import 'package:vaccination_mgmt/ui/manage_drive.dart';
 import 'package:vaccination_mgmt/ui/manage_student.dart';
+import 'package:vaccination_mgmt/ui/student_search.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 class VaccinationTrackerApp extends StatefulWidget {
   const VaccinationTrackerApp({Key? key}) : super(key: key);
@@ -23,31 +25,57 @@ class _VaccinationTrackerState extends State<VaccinationTrackerApp> {
     MenuItem(Icons.home, 'Home'),
     MenuItem(Icons.accessibility, 'Students'),
     MenuItem(Icons.vaccines, 'Drive'),
+    MenuItem(Icons.analytics, 'Reports'),
   ];
-  int _selectedIndex = 0;
-  final _buildBody = const <Widget>[DashboardWidget(), ManageStudentWidget(), ManageDriveWidget()];
+  int _currentIndex = 0;
+  final _buildBody = const <Widget>[DashboardWidget(), ManageStudentWidget(), ManageDriveWidget(), StudentSearchWidget()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildBody[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: menuItemList
-            .map((MenuItem menuItem) => BottomNavigationBarItem(
-                  icon: Icon(menuItem.iconData),
-                  label: menuItem.text,
-                ))
-            .toList(),
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+      body: _buildBody[_currentIndex],
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        showElevation: true,
+        itemCornerRadius: 24,
+        curve: Curves.easeIn,
+        onItemSelected: _onItemTapped,
+        items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+            activeColor: Colors.amber,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.people),
+            title: Text('Students'),
+            activeColor: Colors.purpleAccent,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.vaccines),
+            title: Text(
+              'Drive',
+            ),
+            activeColor: Colors.blue,
+            textAlign: TextAlign.center,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.analytics),
+            title: Text('Reports'),
+            activeColor: Colors.pink,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
+
     );
   }
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _currentIndex = index;
     });
   }
 }

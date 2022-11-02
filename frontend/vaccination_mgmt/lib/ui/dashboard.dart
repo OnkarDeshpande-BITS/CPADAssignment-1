@@ -34,7 +34,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         backgroundColor: Color(0xFFF1F4F8),
         automaticallyImplyLeading: false,
         title: Text(
-          'Welcome <LoggedIn User>',
+          'Welcome Admin',
           style: TextStyle(
             fontFamily: 'Outfit',
             color: Color(0xFF0F1113),

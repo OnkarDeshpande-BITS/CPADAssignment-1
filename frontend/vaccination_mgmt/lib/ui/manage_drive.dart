@@ -30,10 +30,10 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
             width: MediaQuery.of(context).size.width,
             height: 160,
             decoration: BoxDecoration(
-              color: Colors.blueAccent,
+              color: Colors.blue.shade50,
             ),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(20, 40, 20, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(42, 40, 20, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -52,16 +52,16 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
                           'assets/manageVaccine.jpg',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+                      padding: EdgeInsetsDirectional.fromSTEB(14, 0, 0, 0),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -69,9 +69,9 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
                         children: [
                           Text('Manage Drive',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.blue,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                                fontSize: 30,
                                 fontFamily: 'Lexend Deca',
                               )),
                         ],

@@ -72,10 +72,10 @@ class _ManageStudentState extends State<ManageStudentWidget> {
             width: MediaQuery.of(context).size.width,
             height: 160,
             decoration: BoxDecoration(
-              color: Colors.blueAccent,
+              color: Colors.purple.shade50,
             ),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(20, 40, 20, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(42, 40, 20, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -93,27 +93,27 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
-                          'assets/studentVaccine.jpg',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
+                          'assets/studentVaccine-1.jpg',
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+                      padding: EdgeInsetsDirectional.fromSTEB(14, 0, 0, 0),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Manage Student',
+                          Text('Manage Students',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.purple,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                                fontSize: 30,
                                 fontFamily: 'Lexend Deca',
                               )),
                         ],
