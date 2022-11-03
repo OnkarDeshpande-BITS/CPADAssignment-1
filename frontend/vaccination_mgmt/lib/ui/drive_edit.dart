@@ -70,12 +70,12 @@ class EditDriveState extends State<EditDriveWidget> {
       key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(70),
         child: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 14),
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -86,34 +86,30 @@ class EditDriveState extends State<EditDriveWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_rounded,
+                          color: Colors.black54,
+                          size: 30,
+                        ),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Text(
+                        editPageTitle,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.black54,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                  child: Text(
-                    editPageTitle,
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.black54,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
@@ -123,134 +119,137 @@ class EditDriveState extends State<EditDriveWidget> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: AlignmentDirectional(-0.05, 0),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(1, 0, 0, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    FormBuilder(
-                      key: _formKey,
-                      // enabled: false,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Align(
+                alignment: AlignmentDirectional(-0.05, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(1, 0, 0, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      FormBuilder(
+                        key: _formKey,
+                        // enabled: false,
 
-                      autovalidateMode: AutovalidateMode.disabled,
+                        autovalidateMode: AutovalidateMode.disabled,
 
-                      skipDisabled: true,
-                      child: Column(
+                        skipDisabled: true,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'driveName',
+                                initialValue: drive.driveName,
+                                enabled: false,
+                                decoration: const InputDecoration(
+                                  labelText: 'Drive Name',
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'driveDate',
+                                initialValue: dtFormatter.format(drive.driveDt),
+                                enabled: false,
+                                decoration: const InputDecoration(
+                                  labelText: 'Drive Date',
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                                visible: forApproval == true,
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      16, 16, 16, 0),
+                                  child: FormBuilderCheckbox(
+                                    name: 'approved',
+                                    initialValue: false,
+                                    title: Text(
+                                      'Approve',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'covaxineDoses',
+                                initialValue: vaccineMap.containsKey('Covaxine')
+                                    ? vaccineMap['Covaxine']
+                                    : '0',
+                                decoration: InputDecoration(
+                                  labelText: 'Covaxine Doses',
+                                ),
+
+                                // valueTransformer: (text) => num.tryParse(text),
+
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'covishieldDoses',
+                                initialValue: vaccineMap.containsKey('Covishield')
+                                    ? vaccineMap['Covishield']
+                                    : '0',
+                                decoration: InputDecoration(
+                                  labelText: 'Covishield Doses',
+                                ),
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                              ),
+                            ),
+                          ],
+                        ),
+                        //
+                      ),
+                      Row(
                         children: <Widget>[
                           Padding(
                             padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'driveName',
-                              initialValue: drive.driveName,
-                              enabled: false,
-                              decoration: const InputDecoration(
-                                labelText: 'Drive Name',
+                            EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState?.validate() ?? false) {
+                                  _formKey.currentState!.save();
+                                  debugPrint(
+                                      _formKey.currentState?.value.toString());
+                                  updateDriveDetails();
+                                } else {
+                                  debugPrint('validation failed');
+                                }
+                              },
+                              child: const Text(
+                                'Save',
+                                style: TextStyle(color: Colors.white),
                               ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'driveDate',
-                              initialValue: dtFormatter.format(drive.driveDt),
-                              enabled: false,
-                              decoration: const InputDecoration(
-                                labelText: 'Drive Date',
-                              ),
-                            ),
-                          ),
-                          Visibility(
-                              visible: forApproval == true,
-                              child: Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    16, 16, 16, 0),
-                                child: FormBuilderCheckbox(
-                                  name: 'approved',
-                                  initialValue: false,
-                                  title: Text(
-                                    'Approve',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              )),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'covaxineDoses',
-                              initialValue: vaccineMap.containsKey('Covaxine')
-                                  ? vaccineMap['Covaxine']
-                                  : '0',
-                              decoration: InputDecoration(
-                                labelText: 'Covaxine Doses',
-                              ),
-
-                              // valueTransformer: (text) => num.tryParse(text),
-
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'covishieldDoses',
-                              initialValue: vaccineMap.containsKey('Covishield')
-                                  ? vaccineMap['Covishield']
-                                  : '0',
-                              decoration: InputDecoration(
-                                labelText: 'Covishield Doses',
-                              ),
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
                             ),
                           ),
                         ],
                       ),
-                      //
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                _formKey.currentState!.save();
-                                debugPrint(
-                                    _formKey.currentState?.value.toString());
-                                updateDriveDetails();
-                              } else {
-                                debugPrint('validation failed');
-                              }
-                            },
-                            child: const Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
+
       ),
     );
   }

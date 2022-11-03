@@ -28,12 +28,12 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 160,
+            height: 150,
             decoration: BoxDecoration(
               color: Colors.blue.shade50,
             ),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(42, 40, 20, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(24, 40, 20, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -52,8 +52,8 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
                           'assets/manageVaccine.jpg',
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           fit: BoxFit.fill,
                         ),
                       ),

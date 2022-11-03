@@ -3,18 +3,23 @@ import 'package:flutter/material.dart';
 class CustomActionRow extends StatelessWidget {
   final String actionName;
   final Function actionFunction;
+  Color? borderColor;
+  Color? backgroundColor ;
 
-  CustomActionRow(this.actionName, this.actionFunction);
+  CustomActionRow(this.actionName, this.actionFunction, {this.borderColor ,this.backgroundColor });
 
   @override
   Widget build(BuildContext context) {
+    backgroundColor ??= Colors.blue.shade50;
+
+    borderColor ??= Colors.blue;
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Material(
-          color: Colors.transparent,
-          elevation: 0,
+          color: backgroundColor,
+          elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -25,8 +30,8 @@ class CustomActionRow extends StatelessWidget {
               color: Colors.white54,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Colors.black54,
-                width: 0,
+                color: borderColor!,
+                width: 1,
               ),
             ),
             child: Padding(
@@ -35,21 +40,19 @@ class CustomActionRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  Flexible(child: Text(
                     this.actionName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
                     ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.blueGrey,
-                      primary: Colors.white,
-                      backgroundColor: Colors.white,
-                    ),
-                    child: Icon(
+                  )),
+                  IconButton(
+
+                    icon: Icon(
                       Icons.chevron_right_rounded,
                       color: Colors.grey,
                       size: 20,

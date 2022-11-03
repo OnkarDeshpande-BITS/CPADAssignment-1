@@ -75,7 +75,7 @@ class _ManageStudentState extends State<ManageStudentWidget> {
               color: Colors.purple.shade50,
             ),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(42, 40, 20, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(24, 40, 20, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -94,8 +94,8 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                         borderRadius: BorderRadius.circular(8),
                         child: Image.asset(
                           'assets/studentVaccine-1.jpg',
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           fit: BoxFit.fill,
                         ),
                       ),
@@ -136,7 +136,7 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                   // Call setState to refresh the page.
                 });
               });
-            }),
+            },backgroundColor: Colors.purple.shade50, borderColor: Colors.purple),
           ),
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
@@ -145,18 +145,18 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => StudentSearchWidget()),
-                )),
+                ) , backgroundColor: Colors.purple.shade50, borderColor: Colors.purple),
           ),
 
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+            padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Material(
-                  color: Colors.transparent,
-                  elevation: 0,
+                  color: Colors.purple.shade50,
+                  elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -167,12 +167,12 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                       color: Colors.white54,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: Colors.black54,
-                        width: 0,
+                        color: Colors.purple,
+                        width: 1,
                       ),
                     ),
                     child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 16, 0, 16),
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
                         child: Column(children: [
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(16, 0, 4, 0),
@@ -185,16 +185,11 @@ class _ManageStudentState extends State<ManageStudentWidget> {
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                   ),
                                 ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    onPrimary: Colors.blueGrey,
-                                    primary: Colors.white,
-                                    backgroundColor: Colors.white,
-                                  ),
-                                  child: Icon(
+                                IconButton(
+                                  icon: Icon(
                                     Icons.add_circle_outline,
                                     color: Colors.grey,
                                     size: 20,

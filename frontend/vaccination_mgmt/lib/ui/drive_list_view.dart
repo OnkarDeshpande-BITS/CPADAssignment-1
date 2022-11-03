@@ -34,78 +34,86 @@ class _DriveListWidget extends State<DriveListWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white54,
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_rounded,
-                color: Colors.black54,
-                size: 30,
-              ),
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-            ),
-          ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 160,
+            height: 200,
             decoration: BoxDecoration(
-              color: Colors.blueAccent,
+              color: Colors.blue.shade50,
             ),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(20, 40, 20, 0),
+              padding: EdgeInsetsDirectional.fromSTEB(10, 30, 20, 0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 30),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                            onPressed: () async {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(20, 0, 0, 8),
+                          child: Text(listTitle,
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                                fontFamily: 'Lexend Deca',
+                              )),
+                        )
+
+                      ],
                     ),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
-                      child: ClipRRect(
+                  ),
+                  Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 6),
+                    child: Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          'assets/manageVaccine.jpg',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            'assets/manageVaccine.jpg',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(listTitle,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                fontFamily: 'Lexend Deca',
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
+                  )
+
+
                 ],
               ),
+
             ),
           ),
           Expanded(
@@ -117,6 +125,7 @@ class _DriveListWidget extends State<DriveListWidget> {
                       case ConnectionState.waiting:
                         return Center(
                           child: Container(
+                            color:Colors.white,
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: 60,
                               child: CircularProgressIndicator()),

@@ -174,7 +174,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       vaccineTrackerMap[
                                                           'totalStudents']!,
@@ -223,7 +223,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       vaccineTrackerMap[
                                                           'totalVaccinated']!,
@@ -297,7 +297,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      0.38,
+                                                      0.35,
                                                   lineHeight: 8,
                                                   animation: true,
                                                   progressColor:
@@ -669,7 +669,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             .fromSTEB(
                                                                 0, 10, 0, 0),
                                                     child: Text(
-                                                      '#Vaccinated In School Drive',
+                                                      'In School Drive',
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
                                                         color:
@@ -684,7 +684,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       stats['inSchool']!,
                                                       style: TextStyle(
@@ -717,7 +717,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             .fromSTEB(
                                                                 0, 4, 0, 0),
                                                     child: Text(
-                                                      '#Vaccinated Outside Drive',
+                                                      'Outside Drive',
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
                                                         color:
@@ -732,7 +732,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       stats['outsideSchool']!,
                                                       style: TextStyle(
@@ -765,7 +765,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             .fromSTEB(
                                                                 0, 4, 0, 0),
                                                     child: Text(
-                                                      '#Covaxine Doses',
+                                                      'Covaxine Doses',
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
                                                         color:
@@ -780,7 +780,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       stats['noCovaxine']!,
                                                       style: TextStyle(
@@ -813,7 +813,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             .fromSTEB(
                                                                 0, 4, 0, 0),
                                                     child: Text(
-                                                      '#Covishield Doses',
+                                                      'Covishield Doses',
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
                                                         color:
@@ -828,7 +828,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                     padding:
                                                         EdgeInsetsDirectional
                                                             .fromSTEB(
-                                                                0, 4, 200, 0),
+                                                                0, 4, 2, 0),
                                                     child: Text(
                                                       stats['noCovishiled']!,
                                                       style: TextStyle(

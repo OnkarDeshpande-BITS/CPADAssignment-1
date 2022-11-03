@@ -32,10 +32,6 @@ class EditStudentState extends State<EditStudentWidget> {
   void updateDriveDetails() async {
     var studentForm = _formKey.currentState?.value;
 
-
-
-
-
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text("Drive Successfully Saved"),
       duration: Duration(seconds: 2),
@@ -65,12 +61,12 @@ class EditStudentState extends State<EditStudentWidget> {
       key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(100),
+        preferredSize: Size.fromHeight(70),
         child: AppBar(
           backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
           title: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 14),
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -81,34 +77,30 @@ class EditStudentState extends State<EditStudentWidget> {
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.black54,
-                            size: 30,
-                          ),
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_rounded,
+                          color: Colors.black54,
+                          size: 25,
+                        ),
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Text(
+                        'Modify Student Details',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.black54,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                  child: Text(
-                    'Modify Student Details',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      color: Colors.black54,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
@@ -118,203 +110,206 @@ class EditStudentState extends State<EditStudentWidget> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Align(
-              alignment: AlignmentDirectional(-0.05, 0),
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    FormBuilder(
-                      key: _formKey,
-                      // enabled: false,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Align(
+                alignment: AlignmentDirectional(-0.05, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      FormBuilder(
+                        key: _formKey,
+                        // enabled: false,
 
-                      autovalidateMode: AutovalidateMode.disabled,
+                        autovalidateMode: AutovalidateMode.disabled,
 
-                      skipDisabled: true,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'studentId',
-                              decoration: InputDecoration(
-                                labelText: 'StudentId / Rollno',
-                              ),
-                              initialValue: _edit_details.id,
-                              enabled: false,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'stdName',
-                              decoration: InputDecoration(
-                                labelText: 'Name',
-                              ),
-                              initialValue: _edit_details.name,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Please enter value for Student Name";
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderTextField(
-                              name: 'aadharNo',
-                              decoration: InputDecoration(
-                                labelText: 'Aadhar Number',
-                              ),
-                              initialValue: _edit_details.aadhar,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderDateTimePicker(
-                              name: 'stdDOB',
-                              initialEntryMode: DatePickerEntryMode.calendar,
-                              initialValue: _edit_details.dob,
-                              inputType: InputType.date,
-                              format: dtFormatter,
-                              decoration: InputDecoration(
-                                labelText: 'Date of Birth',
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _formKey.currentState!.fields['stdDOB']
-                                        ?.didChange(null);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          if (vaccineName != null &&
-                              vaccineName!.isNotEmpty) ...[
+                        skipDisabled: true,
+                        child: Column(
+                          children: <Widget>[
                             Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
                               child: FormBuilderTextField(
-                                name: 'vaccineName',
+                                name: 'studentId',
                                 decoration: InputDecoration(
-                                  labelText: 'VaccineName',
+                                  labelText: 'StudentId / Rollno',
                                 ),
-                                initialValue: vaccineName,
+                                initialValue: _edit_details.id,
+                                enabled: false,
                               ),
                             ),
-                          ] else ...[
                             Padding(
                               padding:
-                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                              child: FormBuilderDropdown<String>(
-                                name: 'vaccineName',
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'stdName',
                                 decoration: InputDecoration(
-                                  labelText: 'VaccineName',
-                                  hintText: 'Select Vaccine',
+                                  labelText: 'Name',
                                 ),
-                                items: VaccineType.values
-                                    .map((type) => DropdownMenuItem(
-                                          alignment:
-                                              AlignmentDirectional.center,
-                                          value: type.name,
-                                          child: Text(type.name),
-                                        ))
-                                    .toList(),
+                                initialValue: _edit_details.name,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Please enter value for Student Name";
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderTextField(
+                                name: 'aadharNo',
+                                decoration: InputDecoration(
+                                  labelText: 'Aadhar Number',
+                                ),
+                                initialValue: _edit_details.aadhar,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDateTimePicker(
+                                name: 'stdDOB',
+                                initialEntryMode: DatePickerEntryMode.calendar,
+                                initialValue: _edit_details.dob,
+                                inputType: InputType.date,
+                                format: dtFormatter,
+                                decoration: InputDecoration(
+                                  labelText: 'Date of Birth',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _formKey.currentState!.fields['stdDOB']
+                                          ?.didChange(null);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (vaccineName != null &&
+                                vaccineName!.isNotEmpty) ...[
+                              Padding(
+                                padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                                child: FormBuilderTextField(
+                                  name: 'vaccineName',
+                                  decoration: InputDecoration(
+                                    labelText: 'VaccineName',
+                                  ),
+                                  initialValue: vaccineName,
+                                ),
+                              ),
+                            ] else ...[
+                              Padding(
+                                padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                                child: FormBuilderDropdown<String>(
+                                  name: 'vaccineName',
+                                  decoration: InputDecoration(
+                                    labelText: 'VaccineName',
+                                    hintText: 'Select Vaccine',
+                                  ),
+                                  items: VaccineType.values
+                                      .map((type) => DropdownMenuItem(
+                                    alignment:
+                                    AlignmentDirectional.center,
+                                    value: type.name,
+                                    child: Text(type.name),
+                                  ))
+                                      .toList(),
+                                ),
+                              ),
+                            ],
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDateTimePicker(
+                                name: 'dose1Dt',
+                                initialEntryMode: DatePickerEntryMode.calendar,
+                                inputType: InputType.date,
+                                resetIcon: null,
+                                format: dtFormatter,
+                                initialValue: dose1Dt,
+                                decoration: InputDecoration(
+                                  labelText: 'Dose1 Date',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _formKey.currentState!.fields['dose1Dt']
+                                          ?.didChange(null);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: FormBuilderDateTimePicker(
+                                name: 'dose2Dt',
+                                initialEntryMode: DatePickerEntryMode.calendar,
+                                resetIcon: null,
+                                inputType: InputType.date,
+                                initialValue: dose2Dt,
+                                format: dtFormatter,
+                                decoration: InputDecoration(
+                                  labelText: 'Dose2 Date',
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.close),
+                                    onPressed: () {
+                                      _formKey.currentState!.fields['dose2Dt']
+                                          ?.didChange(null);
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                           ],
+                        ),
+                        //
+                      ),
+                      Row(
+                        children: <Widget>[
                           Padding(
                             padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderDateTimePicker(
-                              name: 'dose1Dt',
-                              initialEntryMode: DatePickerEntryMode.calendar,
-                              inputType: InputType.date,
-                              resetIcon: null,
-                              format: dtFormatter,
-                              initialValue: dose1Dt,
-                              decoration: InputDecoration(
-                                labelText: 'Dose1 Date',
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _formKey.currentState!.fields['dose1Dt']
-                                        ?.didChange(null);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: FormBuilderDateTimePicker(
-                              name: 'dose2Dt',
-                              initialEntryMode: DatePickerEntryMode.calendar,
-                              resetIcon: null,
-                              inputType: InputType.date,
-                              initialValue: dose2Dt,
-                              format: dtFormatter,
-                              decoration: InputDecoration(
-                                labelText: 'Dose2 Date',
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.close),
-                                  onPressed: () {
-                                    _formKey.currentState!.fields['dose2Dt']
-                                        ?.didChange(null);
-                                  },
-                                ),
+                            EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState?.validate() ?? false) {
+                                  _formKey.currentState!.save();
+                                  debugPrint(
+                                      _formKey.currentState?.value.toString());
+                                  updateDriveDetails();
+                                } else {
+                                  debugPrint('validation failed');
+                                }
+                              },
+                              child: const Text(
+                                'Save',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      //
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState?.validate() ?? false) {
-                                _formKey.currentState!.save();
-                                debugPrint(
-                                    _formKey.currentState?.value.toString());
-                                updateDriveDetails();
-                              } else {
-                                debugPrint('validation failed');
-                              }
-                            },
-                            child: const Text(
-                              'Save',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
+
       ),
     );
   }
