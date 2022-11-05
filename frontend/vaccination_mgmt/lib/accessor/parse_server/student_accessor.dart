@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:vaccination_mgmt/model/search_model.dart';
 import 'package:vaccination_mgmt/model/studentDetails.dart';
 
 class StudentBackendAccessor {
@@ -64,6 +65,9 @@ class StudentBackendAccessor {
       ..set('isVaccinated', student.isVaccinated)
       ..set('aadharNo', student.aadhar);
 
+    if (student.isVaccinated) {
+      pStudent.set('doseDetails', student.doseDetails);
+    }
     final apiResponse = await pStudent.save();
     if (apiResponse.success) {
       print("Successfully saved");
@@ -72,11 +76,46 @@ class StudentBackendAccessor {
     }
   }
 
-  Future<List<StudentDetails>> getAllStudents() async {
-    final apiResponse = await ParseObject('StudentVaccinationDetails').getAll();
+  Future<List<StudentDetails>> getAllStudents(
+      SearchFilter? searchFilter) async {
+    if (searchFilter != null) {
+      if (searchFilter.isVaccinated != null &&
+          searchFilter.isVaccinated == 'No') {
+        final QueryBuilder<ParseObject> parseQuery =
+            QueryBuilder<ParseObject>(ParseObject('StudentVaccinationDetails'));
+        parseQuery.whereEqualTo('isVaccinated', false);
+        final apiResponse = await parseQuery.query();
+        List<StudentDetails> details = extractStudents(apiResponse);
+
+        return details;
+      } else {
+        return await getStudentsWithCompoundQuery(searchFilter);
+      }
+    }
+    final ParseResponse apiResponse =
+        await ParseObject('StudentVaccinationDetails').getAll();
+    return extractStudents(apiResponse);
+  }
+
+  Future<List<StudentDetails>> getStudentsWithCompoundQuery(
+      SearchFilter searchFilter) async {
+    final QueryBuilder<ParseObject> parseQuery =
+        QueryBuilder<ParseObject>(ParseObject('StudentVaccinationDetails'));
+    if (searchFilter.vaccineName != null) {
+      parseQuery.whereEqualTo('doseDetails.name', searchFilter.vaccineName);
+    }
+    if (searchFilter.driveId != null) {
+      parseQuery.whereEqualTo('schoolDriveId', searchFilter.driveId);
+    } else if (searchFilter.startDt != null) {}
+    final apiResponse = await parseQuery.query();
+    return extractStudents(apiResponse);
+  }
+
+  List<StudentDetails> extractStudents(ParseResponse apiResponse) {
 
     List<StudentDetails> students = [];
     if (apiResponse.success && apiResponse.results != null) {
+
       apiResponse.results?.forEach((element) {
         String? studentId = element.get<String>('studentId');
         String? name = element.get<String>('name');
@@ -89,7 +128,8 @@ class StudentBackendAccessor {
         student.isVaccinated = element.get<bool>('isVaccinated')!;
         List<dynamic>? details = element.get<List<dynamic>>('doseDetails');
         if (details != null && details.isNotEmpty) {
-          details.forEach((json) => student.addDoseDetail(DoseDetail.fromJson(json)));
+          details.forEach(
+              (json) => student.addDoseDetail(DoseDetail.fromJson(json)));
         }
         students.add(student);
       });
@@ -102,7 +142,8 @@ class StudentBackendAccessor {
       ..objectId = student.uuid
       ..set('name', student.name)
       ..set('dob', student.dob?.millisecondsSinceEpoch)
-      ..set('aadharNo', student.aadhar);
+      ..set('aadharNo', student.aadhar)
+      ..set('doseDetails', student.doseDetails);
 
     final apiResponse = await drive.save();
     if (apiResponse.success) {

@@ -27,6 +27,7 @@ class EditDriveState extends State<EditDriveWidget> {
   final String editPageTitle;
   final VaccineDrive drive;
   final bool? forApproval;
+  bool isViewOnly = false;
 
   EditDriveState(this.editPageTitle, this.drive, this.forApproval);
 
@@ -66,6 +67,7 @@ class EditDriveState extends State<EditDriveWidget> {
     Map<String, String> vaccineMap = {
       for (var e in drive.vaccineDetails) e.vaccineName: e.noOfDoses.toString()
     };
+    isViewOnly = drive.state == DriveState.COMPLETED;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -158,29 +160,32 @@ class EditDriveState extends State<EditDriveWidget> {
                               child: FormBuilderTextField(
                                 name: 'driveDate',
                                 initialValue: dtFormatter.format(drive.driveDt),
-                                enabled: false,
+                                enabled: !isViewOnly,
                                 decoration: const InputDecoration(
                                   labelText: 'Drive Date',
                                 ),
                               ),
                             ),
-                            Visibility(
-                                visible: forApproval == true,
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      16, 16, 16, 0),
-                                  child: FormBuilderCheckbox(
-                                    name: 'approved',
-                                    initialValue: false,
-                                    title: Text(
-                                      'Approve',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
+                            if(!isViewOnly) ...[
+                              Visibility(
+                                  visible: forApproval == true,
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        16, 16, 16, 0),
+                                    child: FormBuilderCheckbox(
+                                      name: 'approved',
+                                      initialValue: false,
+                                      title: Text(
+                                        'Approve',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )),
+                                  )),
+                            ],
+
                             Padding(
                               padding:
                               EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
@@ -193,7 +198,7 @@ class EditDriveState extends State<EditDriveWidget> {
                                   labelText: 'Covaxine Doses',
                                 ),
 
-                                // valueTransformer: (text) => num.tryParse(text),
+                                enabled: !isViewOnly,
 
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
@@ -210,6 +215,7 @@ class EditDriveState extends State<EditDriveWidget> {
                                 decoration: InputDecoration(
                                   labelText: 'Covishield Doses',
                                 ),
+                                enabled: !isViewOnly,
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
                               ),
@@ -218,30 +224,33 @@ class EditDriveState extends State<EditDriveWidget> {
                         ),
                         //
                       ),
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                            EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState?.validate() ?? false) {
-                                  _formKey.currentState!.save();
-                                  debugPrint(
-                                      _formKey.currentState?.value.toString());
-                                  updateDriveDetails();
-                                } else {
-                                  debugPrint('validation failed');
-                                }
-                              },
-                              child: const Text(
-                                'Save',
-                                style: TextStyle(color: Colors.white),
+                      if(!isViewOnly) ...[
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding:
+                              EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState?.validate() ?? false) {
+                                    _formKey.currentState!.save();
+                                    debugPrint(
+                                        _formKey.currentState?.value.toString());
+                                    updateDriveDetails();
+                                  } else {
+                                    debugPrint('validation failed');
+                                  }
+                                },
+                                child: const Text(
+                                  'Save',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
+
                     ],
                   ),
                 ),

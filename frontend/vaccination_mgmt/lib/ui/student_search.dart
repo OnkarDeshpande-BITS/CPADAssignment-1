@@ -1,21 +1,26 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:searchable_listview/resources/arrays.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/student_accessor.dart';
+import 'package:vaccination_mgmt/model/search_model.dart';
 import 'package:vaccination_mgmt/model/studentDetails.dart';
 import 'package:vaccination_mgmt/ui/student_edit.dart';
 
 class StudentSearchWidget extends StatefulWidget {
-  const StudentSearchWidget({Key? key}) : super(key: key);
+  SearchFilter? searchFilter;
+  StudentSearchWidget({Key? key, this.searchFilter}) : super(key: key);
 
   @override
-  State<StudentSearchWidget> createState() => _StudentSearchState();
+  State<StudentSearchWidget> createState() => _StudentSearchState(searchFilter);
 }
 
 class _StudentSearchState extends State<StudentSearchWidget> {
+  SearchFilter? _searchFilter;
   List<StudentDetails> allStudents = [];
   List<StudentDetails> recent = [];
+  _StudentSearchState(this._searchFilter);
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +89,10 @@ class _StudentSearchState extends State<StudentSearchWidget> {
                     ),
                     asyncListCallback: () async {
                       List<StudentDetails> students =
-                          await StudentBackendAccessor().getAllStudents();
+                          await StudentBackendAccessor().getAllStudents(_searchFilter);
                       allStudents = students;
-                      recent = allStudents.sublist(0, 6);
+                      int minCut = min(allStudents.length, 6);
+                      recent = allStudents.sublist(0, minCut);
                       return recent;
                     },
                     asyncListFilter: (q, list) {
@@ -109,7 +115,11 @@ class _StudentSearchState extends State<StudentSearchWidget> {
                           builder: (context) => EditStudentWidget(edit_details: item
 
                           )),
-                    );},
+                    ).then((_) {
+                      setState(() {
+                        // Call setState to refresh the page.
+                      });
+                    });},
                     inputDecoration: InputDecoration(
                       labelText: "Search Student By Name or Id",
                       fillColor: Colors.white,
@@ -145,7 +155,7 @@ class StudentItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 60,
+        height: 70,
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(10),
@@ -187,8 +197,9 @@ class StudentItem extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 Text(
-                  student.isVaccinated ? 'Vaccinated' : 'Not Vaccinated',
+                  student.prettyPrintDoseDetails(),
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

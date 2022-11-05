@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vaccination_mgmt/ui/dashboard.dart';
+import 'package:vaccination_mgmt/ui/generate_reports.dart';
 import 'package:vaccination_mgmt/ui/manage_drive.dart';
 import 'package:vaccination_mgmt/ui/manage_student.dart';
 import 'package:vaccination_mgmt/ui/student_search.dart';
@@ -28,7 +29,7 @@ class _VaccinationTrackerState extends State<VaccinationTrackerApp> {
     MenuItem(Icons.analytics, 'Reports'),
   ];
   int _currentIndex = 0;
-  final _buildBody = const <Widget>[DashboardWidget(), ManageStudentWidget(), ManageDriveWidget(), StudentSearchWidget()];
+  final _buildBody = const <Widget>[DashboardWidget(), ManageStudentWidget(), ManageDriveWidget(), GenerateReportsWidget()];
 
   @override
   Widget build(BuildContext context) {

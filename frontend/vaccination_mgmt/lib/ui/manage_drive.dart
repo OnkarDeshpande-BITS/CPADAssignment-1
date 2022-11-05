@@ -23,246 +23,271 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white54,
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 150,
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-            ),
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(24, 40, 20, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
-                      child: ClipRRect(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(24, 40, 20, 0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Card(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          'assets/manageVaccine.jpg',
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.fill,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(2, 2, 2, 2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            'assets/manageVaccine.jpg',
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(14, 0, 0, 0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Manage Drive',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                fontFamily: 'Lexend Deca',
-                              )),
-                        ],
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(14, 0, 0, 0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Manage Drive',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30,
+                                  fontFamily: 'Lexend Deca',
+                                )),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-            child: CustomActionRow('Conduct New', () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CreateNewDriveWidget()),
-              ).then((_) {
-                setState(() {
-                  // Call setState to refresh the page.
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+              child: CustomActionRow('Conduct New', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CreateNewDriveWidget()),
+                ).then((_) {
+                  setState(() {
+                    // Call setState to refresh the page.
+                  });
                 });
-              });
-            }),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-            child: CustomActionRow(
-                'View/Modify Drive', () => debugPrint("View drive clicked")),
-          ),
-          Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-              child: FutureBuilder<List<VaccineDrive>>(
-                  future: getNextDriveDetails(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return Center(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 60,
-                              child: CircularProgressIndicator()),
-                        );
-                      default:
-                        VaccineDrive drive;
-                        var nextDriveDt;
+              }),
+            ),
 
-                        if (snapshot.hasError ||
-                            !snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          return CustomActionRow(
-                              'Manage/Modify Next Drive - No Next Drive',
-                              () => debugPrint("Next drive clicked"));
-                        } else {
-                          drive = snapshot.data![0];
-                          nextDriveDt = drive!.driveDt;
+            Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                child: FutureBuilder<List<VaccineDrive>>(
+                    future: getNextDriveDetails(),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return Center(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 60,
+                                child: CircularProgressIndicator()),
+                          );
+                        default:
+                          VaccineDrive drive;
+                          var nextDriveDt;
 
-                          return CustomActionRow(
-                              'Manage/Modify Next Drive on ${dtFormatter.format(nextDriveDt)}',
-                              () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditDriveWidget(
-                                                editPageTitle:
-                                                    'Edit Next Drive',
-                                                drive: drive,
-                                                forApproval: false,
-                                              )),
-                                    )
+                          if (snapshot.hasError ||
+                              !snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return CustomActionRow(
+                                'Manage/Modify Next Drive - No Next Drive',
+                                    () => debugPrint("Next drive clicked"));
+                          } else {
+                            drive = snapshot.data![0];
+                            nextDriveDt = drive!.driveDt;
+
+                            return CustomActionRow(
+                                'Manage/Modify Next Drive on ${dtFormatter.format(nextDriveDt)}',
+                                    () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditDriveWidget(
+                                          editPageTitle:
+                                          'Edit Next Drive',
+                                          drive: drive,
+                                          forApproval: false,
+                                        )),
+                                  )
+                                });
+                          }
+                      }
+                    })),
+            Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                child: FutureBuilder<List<VaccineDrive>>(
+                    future: getDrivesToApprove(),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return Center(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 60,
+                                child: CircularProgressIndicator()),
+                          );
+                        default:
+                          if (snapshot.hasError ||
+                              !snapshot.hasData ||
+                              snapshot.data!.length == 0) {
+                            return CustomActionRow(
+                                'Approve Drives - 0 Pending Approvals', () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("There are no Drives for Approval"),
+                                duration: Duration(seconds: 2),
+                              ));
+                            });
+                          } else {
+                            int noOfDrivesForApproval = snapshot.data!.length;
+                            return CustomActionRow(
+                                'Approve Drives - ${noOfDrivesForApproval} Require Approvals',
+                                    () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DriveListWidget(
+                                          title: 'Need Approval',
+                                          listGetter: () => getDrivesToApprove(),
+                                          itemEditCall: (driveToEdit, pageRefreshFunction) {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      EditDriveWidget(
+                                                        editPageTitle:
+                                                        'Approve & Edit Drive',
+                                                        drive: driveToEdit,
+                                                        forApproval: true,
+                                                      )),
+                                            ).then((_) {
+                                              pageRefreshFunction();
+                                            });
+                                          },
+                                        )),
+                                  ).then((_) {
+                                    setState(() {
+                                      // Call setState to refresh the page.
+                                    });
                                   });
-                        }
-                    }
-                  })),
-          Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-              child: FutureBuilder<List<VaccineDrive>>(
-                  future: getDrivesToApprove(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return Center(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 60,
-                              child: CircularProgressIndicator()),
-                        );
-                      default:
-                        if (snapshot.hasError ||
-                            !snapshot.hasData ||
-                            snapshot.data!.length == 0) {
-                          return CustomActionRow(
-                              'Approve Drives - 0 Pending Approvals', () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text("There are no Drives for Approval"),
-                              duration: Duration(seconds: 2),
-                            ));
-                          });
-                        } else {
-                          int noOfDrivesForApproval = snapshot.data!.length;
-                          return CustomActionRow(
-                              'Approve Drives - ${noOfDrivesForApproval} Require Approvals',
-                              () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DriveListWidget(
-                                        title: 'Need Approval',
-                                        listGetter: () => getDrivesToApprove(),
-                                        itemEditCall: (driveToEdit, pageRefreshFunction) {
+                                });
+                          }
+                      }
+                    })),
+            Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
+                child: FutureBuilder<int>(
+                    future: noOfUpcomingDrives(),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return Center(
+                            child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height: 60,
+                                child: CircularProgressIndicator()),
+                          );
+                        default:
+                          if (snapshot.hasError || !snapshot.hasData) {
+                            return CustomActionRow('0 Upcoming Drives', () {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("No Upcoming Drives"),
+                                duration: Duration(seconds: 2),
+                              ));
+                            });
+                          } else {
+                            int noOfUpcoming = snapshot.data!;
+                            return CustomActionRow(
+                                '${noOfUpcoming} Upcoming Drives', () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DriveListWidget(
+                                        title: 'Upcoming Drives',
+                                        listGetter: () => getUpcomingDrives(),
+                                        itemEditCall:
+                                            (driveToEdit, pageRefreshFunction) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     EditDriveWidget(
-                                                      editPageTitle:
-                                                          'Approve & Edit Drive',
+                                                      editPageTitle: 'Edit Drive',
                                                       drive: driveToEdit,
-                                                      forApproval: true,
+                                                      forApproval: false,
                                                     )),
                                           ).then((_) {
                                             pageRefreshFunction();
                                           });
-                                        },
-                                      )),
-                            ).then((_) {
-                              setState(() {
-                                // Call setState to refresh the page.
-                              });
+                                        })),
+                              );
                             });
-                          });
-                        }
-                    }
-                  })),
-          Padding(
+                          }
+                      }
+                    })),
+            Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
-              child: FutureBuilder<int>(
-                  future: noOfUpcomingDrives(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.none:
-                      case ConnectionState.waiting:
-                        return Center(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: 60,
-                              child: CircularProgressIndicator()),
-                        );
-                      default:
-                        if (snapshot.hasError || !snapshot.hasData) {
-                          return CustomActionRow('0 Upcoming Drives', () {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text("No Upcoming Drives"),
-                              duration: Duration(seconds: 2),
-                            ));
+              child: CustomActionRow(
+                  'View Drives', () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DriveListWidget(
+                        title: 'Completed Drives',
+                        listGetter: () => getCompletedDrives(),
+                        itemEditCall:
+                            (driveToEdit, pageRefreshFunction) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    EditDriveWidget(
+                                      editPageTitle: 'View Drive',
+                                      drive: driveToEdit,
+                                      forApproval: false,
+                                    )),
+                          ).then((_) {
+                            pageRefreshFunction();
                           });
-                        } else {
-                          int noOfUpcoming = snapshot.data!;
-                          return CustomActionRow(
-                              '${noOfUpcoming} Upcoming Drives', () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DriveListWidget(
-                                      title: 'Upcoming Drives',
-                                      listGetter: () => getUpcomingDrives(),
-                                      itemEditCall:
-                                          (driveToEdit, pageRefreshFunction) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditDriveWidget(
-                                                    editPageTitle: 'Edit Drive',
-                                                    drive: driveToEdit,
-                                                    forApproval: false,
-                                                  )),
-                                        ).then((_) {
-                                          pageRefreshFunction();
-                                        });
-                                      })),
-                            );
-                          });
-                        }
-                    }
-                  })),
-        ],
-      ),
+                        })),
+              )),
+            ),
+          ],
+        ),
+      )
+
     );
   }
 
@@ -282,5 +307,9 @@ class _ManageDriveStateState extends State<ManageDriveWidget> {
 
   Future<List<VaccineDrive>> getUpcomingDrives() async {
     return await backendAccessor.getUpcomingDrives();
+  }
+
+  Future<List<VaccineDrive>> getCompletedDrives() async {
+    return await backendAccessor.getCompletedDrives();
   }
 }

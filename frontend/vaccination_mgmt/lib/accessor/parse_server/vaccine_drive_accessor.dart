@@ -49,6 +49,15 @@ class VaccineDriveBackendAccessor {
     return await _executeQueryAndGetListResult(parseQuery);
   }
 
+  Future<List<VaccineDrive>> getCompletedDrives() async {
+    final QueryBuilder<ParseObject> parseQuery =
+    QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))
+      ..whereEqualTo('state', DriveState.COMPLETED.name)
+      ..orderByDescending('driveDt');
+
+    return await _executeQueryAndGetListResult(parseQuery);
+  }
+
   Future<List<VaccineDrive>> getLastCompleted() async {
     final QueryBuilder<ParseObject> parseQuery =
     QueryBuilder<ParseObject>(ParseObject('VaccinationDrive'))

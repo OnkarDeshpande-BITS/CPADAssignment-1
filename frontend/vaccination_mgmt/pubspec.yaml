@@ -70,6 +70,8 @@ flutter:
   assets:
     - assets/manageVaccine.jpg
     - assets/studentVaccine-1.jpg
+    - assets/csv.png
+    - assets/excelicon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

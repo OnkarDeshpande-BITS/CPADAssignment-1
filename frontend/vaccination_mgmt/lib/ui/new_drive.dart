@@ -177,7 +177,7 @@ class CreateNewDriveState extends State<CreateNewDriveWidget> {
                               child: FormBuilderTextField(
                                 name: 'covaxineDoses',
                                 decoration: InputDecoration(
-                                  labelText: 'Covaxine Doses',
+                                  labelText: 'Covaxin Doses',
                                 ),
 
                                 // valueTransformer: (text) => num.tryParse(text),

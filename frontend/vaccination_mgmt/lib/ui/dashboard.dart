@@ -765,7 +765,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                                                             .fromSTEB(
                                                                 0, 4, 0, 0),
                                                     child: Text(
-                                                      'Covaxine Doses',
+                                                      'Covaxin Doses',
                                                       style: TextStyle(
                                                         fontFamily: 'Outfit',
                                                         color:
