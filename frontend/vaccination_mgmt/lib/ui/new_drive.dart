@@ -127,7 +127,7 @@ class CreateNewDriveState extends State<CreateNewDriveWidget> {
 
                                 // valueTransformer: (text) => num.tryParse(text),
                                 validator: (value) {
-                                  if (value!.isEmpty) {
+                                  if (value ==null || value!.isEmpty) {
                                     return "Please enter value for DriveName";
                                   }
                                   return null;

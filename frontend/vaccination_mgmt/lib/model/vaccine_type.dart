@@ -1,1 +1,1 @@
-enum VaccineType {COVAXIN, COVISHIELD}
+enum VaccineType {Covaxin, Covishield}

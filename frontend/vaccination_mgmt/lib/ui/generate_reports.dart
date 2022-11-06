@@ -330,11 +330,16 @@ class _GenerateReportState extends State<GenerateReportsWidget> {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 20),
+
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+
                             Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(8, 16, 8, 0),
+                              padding: EdgeInsetsDirectional.fromSTEB(16, 16, 8, 0),
                               child: Text(
-                                'Export This Report as ->',
+                                'Export Report as ->',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   color: Colors.pink,

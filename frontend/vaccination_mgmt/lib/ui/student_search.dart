@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:searchable_listview/resources/arrays.dart';
 import 'package:searchable_listview/searchable_listview.dart';
 import 'package:vaccination_mgmt/accessor/parse_server/student_accessor.dart';
 import 'package:vaccination_mgmt/model/search_model.dart';
@@ -91,7 +90,7 @@ class _StudentSearchState extends State<StudentSearchWidget> {
                       List<StudentDetails> students =
                           await StudentBackendAccessor().getAllStudents(_searchFilter);
                       allStudents = students;
-                      int minCut = min(allStudents.length, 6);
+                      int minCut = min(allStudents.length, 8);
                       recent = allStudents.sublist(0, minCut);
                       return recent;
                     },
@@ -101,7 +100,7 @@ class _StudentSearchState extends State<StudentSearchWidget> {
                       }
                       return allStudents
                           .where((element) =>
-                              element.name.contains(q) ||
+                              element.name.toLowerCase().contains(q.toLowerCase()) ||
                               element.id.contains(q))
                           .toList();
                     },

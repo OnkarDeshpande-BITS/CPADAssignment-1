@@ -195,7 +195,7 @@ class EditDriveState extends State<EditDriveWidget> {
                                     ? vaccineMap['Covaxine']
                                     : '0',
                                 decoration: InputDecoration(
-                                  labelText: 'Covaxine Doses',
+                                  labelText: 'Covaxin Doses',
                                 ),
 
                                 enabled: !isViewOnly,

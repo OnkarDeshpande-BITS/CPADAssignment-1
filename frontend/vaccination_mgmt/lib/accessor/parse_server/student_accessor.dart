@@ -106,7 +106,10 @@ class StudentBackendAccessor {
     }
     if (searchFilter.driveId != null) {
       parseQuery.whereEqualTo('schoolDriveId', searchFilter.driveId);
-    } else if (searchFilter.startDt != null) {}
+    } else if (searchFilter.startDt != null) {
+      parseQuery.whereGreaterThanOrEqualsTo('doseDetails.date', searchFilter.startDt?.millisecondsSinceEpoch);
+      parseQuery.whereLessThanOrEqualTo('doseDetails.date', searchFilter.startDt?.millisecondsSinceEpoch);
+    }
     final apiResponse = await parseQuery.query();
     return extractStudents(apiResponse);
   }

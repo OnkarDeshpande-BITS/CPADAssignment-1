@@ -11,6 +11,7 @@ void main() async {
       clientKey: keyClientKey, autoSendSessionId: true);
 
   runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: VaccinationTrackerApp(),
   ));
 }

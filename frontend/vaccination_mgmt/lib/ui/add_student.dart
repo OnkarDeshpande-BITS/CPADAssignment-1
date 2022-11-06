@@ -33,15 +33,16 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
     if (vaccinated) {
       String vaccineName = studentForm?['vaccineName'];
       if (vaccineName != null && vaccineName.isNotEmpty) {
-        DateTime dose1dt = studentForm?['dose1Dt'];
-        if (dose1dt != null) {
+        if(studentForm?['dose1Dt'] != null) {
+          DateTime dose1dt = studentForm?['dose1Dt'];
+          debugPrint(dose1dt.toString());
           DoseDetail detail1 =
               DoseDetail(vaccineName, 1, dose1dt.millisecondsSinceEpoch);
           student.addDoseDetail(detail1);
         }
+        if(studentForm?['dose2Dt'] != null) {
         DateTime dose2dt = studentForm?['dose2Dt'];
-        if (dose2dt != null) {
-          DoseDetail detail2 =
+            DoseDetail detail2 =
               DoseDetail(vaccineName, 2, dose2dt.millisecondsSinceEpoch);
           student.addDoseDetail(detail2);
         }
@@ -139,7 +140,7 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
 
                               // valueTransformer: (text) => num.tryParse(text),
                               validator: (value) {
-                                if (value!.isEmpty) {
+                                if (value == null || value!.isEmpty) {
                                   return "Please enter value for StudentId";
                                 }
                                 return null;
@@ -159,7 +160,7 @@ class AddNewStudentState extends State<AddNewStudentWidget> {
 
                               // valueTransformer: (text) => num.tryParse(text),
                               validator: (value) {
-                                if (value!.isEmpty) {
+                                if (value ==null || value!.isEmpty) {
                                   return "Please enter value for Student Name";
                                 }
                                 return null;

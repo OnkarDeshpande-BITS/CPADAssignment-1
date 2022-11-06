@@ -40,14 +40,16 @@ class EditStudentState extends State<EditStudentWidget> {
 student.uuid = _edit_details.uuid;
     String vaccineName = studentForm?['vaccineName'];
     if (vaccineName != null && vaccineName.isNotEmpty) {
-      DateTime dose1dt = studentForm?['dose1Dt'];
-      if (dose1dt != null) {
+
+      if (studentForm?['dose1Dt'] != null) {
+        DateTime dose1dt = studentForm?['dose1Dt'];
         DoseDetail detail1 =
             DoseDetail(vaccineName, 1, dose1dt.millisecondsSinceEpoch);
         student.addDoseDetail(detail1);
       }
-      DateTime dose2dt = studentForm?['dose2Dt'];
-      if (dose2dt != null) {
+
+      if (studentForm?['dose2Dt'] != null) {
+        DateTime dose2dt = studentForm?['dose2Dt'];
         DoseDetail detail2 =
             DoseDetail(vaccineName, 2, dose2dt.millisecondsSinceEpoch);
         student.addDoseDetail(detail2);
